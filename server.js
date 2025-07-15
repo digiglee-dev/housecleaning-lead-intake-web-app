@@ -57,28 +57,48 @@ async function sendConfirmationEmail(lead) {
   const mailOptions = {
     from: process.env.EMAIL_USER || 'yourcompanyemail@gmail.com',
     to: lead.email,
-    subject: 'DigiGlee Cleaning - Appointment Request Received',
+    subject: 'DigiGlee Cleaning - Service Request Received',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4dc3ff; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
           <h2>DigiGlee Cleaning</h2>
         </div>
         <div style="padding: 20px; background-color: #f9f9f9; border-radius: 0 0 8px 8px;">
-          <h3>Thank you for your cleaning request!</h3>
+          <h3>Thank you for your cleaning service request!</h3>
           <p>Hi ${lead.name},</p>
-          <p>We have received your cleaning request for <strong>${lead.date}</strong>.</p>
+          <p>We have received your cleaning request for <strong>${lead.startDate}</strong>${lead.preferredTime ? ` at <strong>${lead.preferredTime}</strong>` : ''}.</p>
           
           <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
             <h4>Request Details:</h4>
             <p><strong>Service Type:</strong> ${lead.buildingType === 'res' ? 'Residential' : 'Commercial'}</p>
-            ${lead.bedrooms ? `<p><strong>Bedrooms:</strong> ${lead.bedrooms}</p>` : ''}
-            ${lead.bathrooms ? `<p><strong>Bathrooms:</strong> ${lead.bathrooms}</p>` : ''}
-            ${lead.sqft ? `<p><strong>Square Footage:</strong> ${lead.sqft}</p>` : ''}
-            ${lead.offices ? `<p><strong>Offices:</strong> ${lead.offices}</p>` : ''}
-            ${lead.notes ? `<p><strong>Additional Notes:</strong> ${lead.notes}</p>` : ''}
+            <p><strong>Address:</strong> ${lead.address}</p>
+            <p><strong>Phone:</strong> ${lead.phone}</p>
+            ${lead.preferredTime ? `<p><strong>Preferred Time:</strong> ${lead.preferredTime}</p>` : ''}
+            ${lead.frequency ? `<p><strong>Frequency:</strong> ${lead.frequency}</p>` : ''}
+            ${lead.inspectionDate ? `<p><strong>Preferred Inspection Date:</strong> ${lead.inspectionDate}</p>` : ''}
+            ${lead.source ? `<p><strong>How you found us:</strong> ${lead.source}</p>` : ''}
+            
+            ${lead.buildingType === 'res' ? `
+              <h5>Residential Details:</h5>
+              ${lead.resSqft ? `<p><strong>Square Footage:</strong> ${lead.resSqft}</p>` : ''}
+              ${lead.bedrooms ? `<p><strong>Bedrooms:</strong> ${lead.bedrooms}</p>` : ''}
+              ${lead.bathrooms ? `<p><strong>Bathrooms:</strong> ${lead.bathrooms}</p>` : ''}
+              ${lead.applianceCount ? `<p><strong>Number of Appliances:</strong> ${lead.applianceCount}</p>` : ''}
+              ${lead.applianceList ? `<p><strong>Appliances:</strong> ${lead.applianceList}</p>` : ''}
+              ${lead.resCleaningType ? `<p><strong>Cleaning Type:</strong> ${Array.isArray(lead.resCleaningType) ? lead.resCleaningType.join(', ') : lead.resCleaningType}</p>` : ''}
+            ` : ''}
+            
+            ${lead.buildingType === 'com' ? `
+              <h5>Commercial Details:</h5>
+              ${lead.comSqft ? `<p><strong>Square Footage:</strong> ${lead.comSqft}</p>` : ''}
+              ${lead.comAreas ? `<p><strong>Areas:</strong> ${Array.isArray(lead.comAreas) ? lead.comAreas.join(', ') : lead.comAreas}</p>` : ''}
+              ${lead.comAppliances ? `<p><strong>Appliances:</strong> ${Array.isArray(lead.comAppliances) ? lead.comAppliances.join(', ') : lead.comAppliances}</p>` : ''}
+            ` : ''}
+            
+            ${lead.notes ? `<p><strong>Special Requests:</strong> ${lead.notes}</p>` : ''}
           </div>
           
-          <p>Our team will contact you within 24 hours to confirm your appointment and provide a quote.</p>
+          <p>Our team will contact you within 24 hours to confirm your appointment and provide a detailed quote.</p>
           <p>If you have any questions, please don't hesitate to contact us.</p>
           
           <p>Best regards,<br>
@@ -107,7 +127,7 @@ app.post('/submit-form', async (req, res) => {
     const lead = req.body;
     
     // Validate required fields
-    if (!lead.name || !lead.email || !lead.phone || !lead.buildingType || !lead.date) {
+    if (!lead.name || !lead.email || !lead.phone || !lead.buildingType || !lead.address || !lead.startDate) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 

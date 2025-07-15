@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DigiGlee Cleaning Intake Form</title>
+  <!-- Google APIs -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -187,6 +190,63 @@
         padding: 20px;
       }
     }
+    
+    /* Calendar availability styles */
+    .calendar-availability {
+      margin-top: 10px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    
+    .availability-header {
+      font-weight: 600;
+      color: #2ab7ca;
+      margin-bottom: 10px;
+    }
+    
+    .time-slot {
+      display: inline-block;
+      padding: 8px 12px;
+      margin: 4px;
+      background: #4dc3ff;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .time-slot:hover {
+      background: #2ab7ca;
+      transform: translateY(-1px);
+    }
+    
+    .time-slot.selected {
+      background: #28a745;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
+    }
+    
+    .time-slot.unavailable {
+      background: #dc3545;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    .availability-loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    .availability-error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -206,21 +266,61 @@
       
       <div class="form-row">
         <div>
-          <label for="email">Email Address <span class="required">*</span></label>
-          <input type="email" id="email" name="email" required />
-        </div>
-        <div>
           <label for="phone">Phone Number <span class="required">*</span></label>
           <input type="tel" id="phone" name="phone" required />
         </div>
+        <div>
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required />
+        </div>
       </div>
+      
+      <label for="address">Address <span class="required">*</span></label>
+      <textarea id="address" name="address" rows="3" required placeholder="Enter your full address"></textarea>
     </div>
 
-    <!-- Service Type -->
+    <!-- Service Details -->
     <div class="section">
-      <div class="section-title">Service Type</div>
+      <div class="section-title">Service Details</div>
       
-      <label for="buildingType">Building Type <span class="required">*</span></label>
+      <div class="form-row">
+        <div>
+          <label for="startDate">Preferred Start Date <span class="required">*</span></label>
+          <input type="date" id="startDate" name="startDate" required />
+          <div id="calendarAvailability" class="calendar-availability"></div>
+        </div>
+        <div>
+          <label for="inspectionDate">Site Inspection Preview - Select Preferred Date</label>
+          <input type="date" id="inspectionDate" name="inspectionDate" />
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div>
+          <label for="frequency">Cleaning Frequency</label>
+          <select id="frequency" name="frequency">
+            <option value="">Select frequency...</option>
+            <option value="one-time">One-time</option>
+            <option value="weekly">Weekly</option>
+            <option value="bi-weekly">Bi-weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+        <div>
+          <label for="source">How did you find us?</label>
+          <select id="source" name="source">
+            <option value="">Select source...</option>
+            <option value="tiktok">TikTok</option>
+            <option value="facebook">Facebook</option>
+            <option value="instagram">Instagram</option>
+            <option value="google">Google</option>
+            <option value="friend">Friend</option>
+            <option value="flyer">Flyer</option>
+          </select>
+        </div>
+      </div>
+      
+      <label for="buildingType">Type of Building <span class="required">*</span></label>
       <select id="buildingType" name="buildingType" required>
         <option value="">Select building type...</option>
         <option value="res">Residential</option>
@@ -232,97 +332,163 @@
     <div class="section hidden" id="resSection">
       <div class="section-title">Residential Details</div>
       
+      <label for="resSqft">Total Square Footage</label>
+      <input type="text" id="resSqft" name="resSqft" placeholder="e.g., 2,500 sq ft" />
+      
       <div class="form-row">
         <div>
-          <label for="bedrooms">Number of Bedrooms</label>
+          <label for="bedrooms"># of Bedrooms</label>
           <input type="number" id="bedrooms" name="bedrooms" min="0" max="20" />
         </div>
         <div>
-          <label for="bathrooms">Number of Bathrooms</label>
+          <label for="bathrooms"># of Bathrooms</label>
           <input type="number" id="bathrooms" name="bathrooms" min="0" max="20" step="0.5" />
         </div>
       </div>
       
-      <label for="homeSize">Home Size</label>
-      <select id="homeSize" name="homeSize">
-        <option value="">Select size...</option>
-        <option value="small">Small (under 1,500 sq ft)</option>
-        <option value="medium">Medium (1,500 - 2,500 sq ft)</option>
-        <option value="large">Large (2,500 - 4,000 sq ft)</option>
-        <option value="xlarge">Extra Large (over 4,000 sq ft)</option>
+      <div class="form-row">
+        <div>
+          <label for="hallways"># of Hallways</label>
+          <input type="number" id="hallways" name="hallways" min="0" max="10" />
+        </div>
+        <div>
+          <label for="kitchens"># of Kitchens</label>
+          <input type="number" id="kitchens" name="kitchens" min="0" max="5" />
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div>
+          <label for="diningAreas"># of Dining Areas</label>
+          <input type="number" id="diningAreas" name="diningAreas" min="0" max="5" />
+        </div>
+        <div>
+          <label for="livingRooms"># of Living Rooms</label>
+          <input type="number" id="livingRooms" name="livingRooms" min="0" max="5" />
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div>
+          <label for="familyRooms"># of Family Rooms</label>
+          <input type="number" id="familyRooms" name="familyRooms" min="0" max="5" />
+        </div>
+        <div>
+          <label for="basements"># of Basements</label>
+          <input type="number" id="basements" name="basements" min="0" max="3" />
+        </div>
+      </div>
+      
+      <label for="applianceCount"># of Appliances</label>
+      <input type="number" id="applianceCount" name="applianceCount" min="0" max="50" />
+      
+      <label for="applianceList">List of Appliances</label>
+      <textarea id="applianceList" name="applianceList" rows="3" placeholder="e.g., Refrigerator, Oven, Dishwasher, Microwave, Washer, Dryer..."></textarea>
+      
+      <label for="resCleaningType">Type of Cleaning Needed (Residential)</label>
+      <select id="resCleaningType" name="resCleaningType" multiple size="7">
+        <option value="dust">Dust</option>
+        <option value="deep-cleaning">Deep Cleaning</option>
+        <option value="mop">Mop</option>
+        <option value="vacuum">Vacuum</option>
+        <option value="water">Water</option>
+        <option value="wash">Wash</option>
+        <option value="disinfect">Disinfect</option>
       </select>
+      <small style="color: #666; margin-top: 5px; display: block;">Hold Ctrl (or Cmd) to select multiple options</small>
     </div>
 
     <!-- Commercial Details -->
     <div class="section hidden" id="comSection">
       <div class="section-title">Commercial Details</div>
       
-      <div class="form-row">
-        <div>
-          <label for="sqft">Square Footage</label>
-          <input type="number" id="sqft" name="sqft" min="0" placeholder="e.g., 5000" />
-        </div>
-        <div>
-          <label for="offices">Number of Offices</label>
-          <input type="number" id="offices" name="offices" min="0" />
-        </div>
-      </div>
+      <label for="comSqft">Total Square Footage</label>
+      <input type="text" id="comSqft" name="comSqft" placeholder="e.g., 10,000 sq ft" />
       
-      <label for="businessType">Business Type</label>
-      <select id="businessType" name="businessType">
-        <option value="">Select business type...</option>
+      <label for="comAreas">Commercial Areas</label>
+      <select id="comAreas" name="comAreas" multiple size="10">
         <option value="office">Office</option>
-        <option value="retail">Retail Store</option>
-        <option value="restaurant">Restaurant/Food Service</option>
-        <option value="medical">Medical/Healthcare</option>
-        <option value="warehouse">Warehouse</option>
+        <option value="workspace">Workspace</option>
+        <option value="breakroom">Breakroom</option>
+        <option value="bathrooms">Bathrooms</option>
+        <option value="lobby">Lobby</option>
+        <option value="hallways">Hallways</option>
+        <option value="patios">Patios</option>
+        <option value="elevators">Elevators</option>
+        <option value="kitchenette">Kitchenette</option>
+        <option value="storage">Storage</option>
+      </select>
+      <small style="color: #666; margin-top: 5px; display: block;">Hold Ctrl (or Cmd) to select multiple options</small>
+      
+      <label for="comAppliances">Commercial Appliances</label>
+      <select id="comAppliances" name="comAppliances" multiple size="6">
+        <option value="fridge">Fridge</option>
+        <option value="microwave">Microwave</option>
+        <option value="coffee-machine">Coffee Machine</option>
+        <option value="dishwasher">Dishwasher</option>
+        <option value="water-cooler">Water Cooler</option>
         <option value="other">Other</option>
       </select>
+      <small style="color: #666; margin-top: 5px; display: block;">Hold Ctrl (or Cmd) to select multiple options</small>
+      
+      <label for="officeTasks">Office Tasks</label>
+      <select id="officeTasks" name="officeTasks" multiple size="4">
+        <option value="vacuum-mop">Vacuum/mop floors</option>
+        <option value="empty-trash">Empty trash</option>
+        <option value="disinfect-switches">Disinfect switches and handles</option>
+        <option value="clean-blinds">Clean blinds</option>
+      </select>
+      
+      <label for="workspaceTasks">Workspace Tasks</label>
+      <select id="workspaceTasks" name="workspaceTasks" multiple size="3">
+        <option value="organize-desks">Organize desks</option>
+        <option value="wipe-monitors">Wipe monitors</option>
+        <option value="sanitize-headsets">Sanitize headsets</option>
+      </select>
+      
+      <label for="breakroomTasks">Breakroom Tasks</label>
+      <select id="breakroomTasks" name="breakroomTasks" multiple size="3">
+        <option value="clean-appliances">Clean appliances</option>
+        <option value="disinfect-handles">Disinfect handles</option>
+        <option value="take-out-trash">Take out trash</option>
+      </select>
+      
+      <label for="bathroomTasks">Bathroom Tasks</label>
+      <select id="bathroomTasks" name="bathroomTasks" multiple size="4">
+        <option value="disinfect-sinks">Disinfect sinks</option>
+        <option value="clean-mirrors">Clean mirrors</option>
+        <option value="restock-supplies">Restock supplies</option>
+        <option value="mop-floors">Mop floors</option>
+      </select>
+      
+      <label for="lobbyTasks">Lobby & Hallways Tasks</label>
+      <select id="lobbyTasks" name="lobbyTasks" multiple size="3">
+        <option value="clean-furniture">Clean furniture</option>
+        <option value="vacuum-mats">Vacuum mats</option>
+        <option value="clean-walls">Clean walls</option>
+      </select>
+      
+      <label for="elevatorTasks">Elevator Tasks</label>
+      <select id="elevatorTasks" name="elevatorTasks" multiple size="2">
+        <option value="sanitize-buttons">Sanitize buttons</option>
+        <option value="clean-mirrors">Clean mirrors</option>
+      </select>
+      
+      <label for="otherAreas">Other Areas</label>
+      <select id="otherAreas" name="otherAreas" multiple size="4">
+        <option value="clean-kitchenettes">Clean kitchenettes</option>
+        <option value="storage">Storage</option>
+        <option value="bulletin-boards">Bulletin boards</option>
+        <option value="recycling-bins">Recycling bins</option>
+      </select>
     </div>
 
-    <!-- Service Details -->
+    <!-- Special Requests -->
     <div class="section">
-      <div class="section-title">Service Details</div>
+      <div class="section-title">Special Requests</div>
       
-      <label for="serviceType">Service Type</label>
-      <select id="serviceType" name="serviceType">
-        <option value="">Select service type...</option>
-        <option value="one-time">One-time Cleaning</option>
-        <option value="weekly">Weekly Cleaning</option>
-        <option value="bi-weekly">Bi-weekly Cleaning</option>
-        <option value="monthly">Monthly Cleaning</option>
-        <option value="deep-clean">Deep Cleaning</option>
-        <option value="move-in-out">Move-in/Move-out Cleaning</option>
-      </select>
-      
-      <label for="date">Preferred Service Date <span class="required">*</span></label>
-      <input type="date" id="date" name="date" required />
-      
-      <label for="timePreference">Time Preference</label>
-      <select id="timePreference" name="timePreference">
-        <option value="">No preference</option>
-        <option value="morning">Morning (8 AM - 12 PM)</option>
-        <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
-        <option value="evening">Evening (5 PM - 8 PM)</option>
-      </select>
-    </div>
-
-    <!-- Additional Information -->
-    <div class="section">
-      <div class="section-title">Additional Information</div>
-      
-      <label for="notes">Special Instructions or Notes</label>
-      <textarea id="notes" name="notes" placeholder="Please include any special requests, areas of focus, or access instructions..."></textarea>
-      
-      <label for="pets">Do you have pets?</label>
-      <select id="pets" name="pets">
-        <option value="">Please select...</option>
-        <option value="no">No pets</option>
-        <option value="cats">Cats</option>
-        <option value="dogs">Dogs</option>
-        <option value="both">Both cats and dogs</option>
-        <option value="other">Other pets</option>
-      </select>
+      <label for="notes">Custom Requests or Notes</label>
+      <textarea id="notes" name="notes" rows="4" placeholder="Please include any special requests, areas of focus, access instructions, or additional details..."></textarea>
     </div>
 
     <div class="loading" id="loading">
@@ -336,34 +502,208 @@
   </form>
 
   <script>
+    // Google Calendar API configuration
+    const API_KEY = 'YOUR_API_KEY'; // Replace with your Google API key
+    const CLIENT_ID = 'YOUR_CLIENT_ID'; // Replace with your OAuth 2.0 client ID
+    const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+    const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+    let gapi, tokenClient;
+    let selectedTimeSlot = null;
+
+    // Form elements
     const form = document.getElementById('cleaningForm');
     const buildingType = document.getElementById('buildingType');
     const resSection = document.getElementById('resSection');
     const comSection = document.getElementById('comSection');
-    const dateInput = document.getElementById('date');
+    const startDateInput = document.getElementById('startDate');
+    const inspectionDateInput = document.getElementById('inspectionDate');
     const loadingDiv = document.getElementById('loading');
     const messageDiv = document.getElementById('message');
     const submitBtn = document.getElementById('submitBtn');
 
-    // Set minimum date to today
+    // Set minimum date to today for both date inputs
     const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
+    startDateInput.setAttribute('min', today);
+    inspectionDateInput.setAttribute('min', today);
+
+    // Initialize Google APIs
+    async function gapiLoaded() {
+      await gapi.load('client', initializeGapiClient);
+    }
+
+    async function initializeGapiClient() {
+      await gapi.client.init({
+        apiKey: API_KEY,
+        discoveryDocs: [DISCOVERY_DOC],
+      });
+    }
+
+    function gisLoaded() {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: '', // defined later
+      });
+    }
 
     // Handle building type changes
     buildingType.addEventListener('change', function() {
       const value = this.value;
       
+      // Hide all sections first
+      resSection.classList.add('hidden');
+      comSection.classList.add('hidden');
+      
+      // Show the selected section
       if (value === 'res') {
         resSection.classList.remove('hidden');
-        comSection.classList.add('hidden');
       } else if (value === 'com') {
         comSection.classList.remove('hidden');
-        resSection.classList.add('hidden');
-      } else {
-        resSection.classList.add('hidden');
-        comSection.classList.add('hidden');
       }
     });
+
+    // Check calendar availability for a specific date
+    async function checkAvailability(date) {
+      const availabilityDiv = document.getElementById('calendarAvailability');
+      if (!availabilityDiv) return;
+      
+      availabilityDiv.innerHTML = '<div class="availability-loading">Loading available times...</div>';
+
+      try {
+        const timeMin = new Date(date + 'T00:00:00').toISOString();
+        const timeMax = new Date(date + 'T23:59:59').toISOString();
+
+        const response = await gapi.client.calendar.events.list({
+          calendarId: 'primary',
+          timeMin: timeMin,
+          timeMax: timeMax,
+          showDeleted: false,
+          singleEvents: true,
+          orderBy: 'startTime'
+        });
+
+        const events = response.result.items;
+        const businessHours = generateBusinessHours();
+        const availableSlots = getAvailableSlots(events, businessHours, date);
+
+        displayAvailableSlots(availableSlots);
+      } catch (error) {
+        console.error('Error checking availability:', error);
+        availabilityDiv.innerHTML = '<div class="availability-error">Error loading availability. Please select a date manually.</div>';
+      }
+    }
+
+    // Generate business hours (9 AM to 6 PM, Monday to Saturday)
+    function generateBusinessHours() {
+      const slots = [];
+      for (let hour = 9; hour < 18; hour++) {
+        const timeString = `${hour.toString().padStart(2, '0')}:00`;
+        slots.push(timeString);
+      }
+      return slots;
+    }
+
+    // Check which time slots are available
+    function getAvailableSlots(events, businessHours, date) {
+      const selectedDate = new Date(date);
+      const dayOfWeek = selectedDate.getDay();
+      
+      // Skip Sundays (0)
+      if (dayOfWeek === 0) {
+        return [];
+      }
+
+      const occupiedSlots = new Set();
+      
+      events.forEach(event => {
+        if (event.start.dateTime) {
+          const startTime = new Date(event.start.dateTime);
+          const endTime = new Date(event.end.dateTime);
+          
+          // Mark all hours within the event as occupied
+          for (let time = new Date(startTime); time < endTime; time.setHours(time.getHours() + 1)) {
+            const timeString = `${time.getHours().toString().padStart(2, '0')}:00`;
+            occupiedSlots.add(timeString);
+          }
+        }
+      });
+
+      return businessHours.filter(slot => !occupiedSlots.has(slot));
+    }
+
+    // Display available time slots
+    function displayAvailableSlots(availableSlots) {
+      const availabilityDiv = document.getElementById('calendarAvailability');
+      
+      if (availableSlots.length === 0) {
+        availabilityDiv.innerHTML = '<div class="availability-error">No available times for this date. Please select another date.</div>';
+        return;
+      }
+
+      let html = '<div class="availability-header">Available Times:</div>';
+      availableSlots.forEach(slot => {
+        const hour = parseInt(slot.split(':')[0]);
+        const displayTime = hour > 12 ? `${hour - 12}:00 PM` : (hour === 12 ? '12:00 PM' : `${hour}:00 AM`);
+        html += `<span class="time-slot" onclick="selectTimeSlot('${slot}', this)">${displayTime}</span>`;
+      });
+
+      availabilityDiv.innerHTML = html;
+    }
+
+    // Select a time slot
+    function selectTimeSlot(time, element) {
+      // Remove selection from all slots
+      document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('selected');
+      });
+      
+      // Select the clicked slot
+      element.classList.add('selected');
+      selectedTimeSlot = time;
+    }
+
+    // Handle date change for start date
+    function handleStartDateChange() {
+      const selectedDate = startDateInput.value;
+      
+      if (selectedDate && API_KEY !== 'YOUR_API_KEY') {
+        // Check if user is authenticated
+        if (gapi && gapi.client && gapi.client.getToken() === null) {
+          // Prompt the user to sign in
+          tokenClient.callback = async (resp) => {
+            if (resp.error !== undefined) {
+              throw (resp);
+            }
+            await checkAvailability(selectedDate);
+          };
+
+          if (gapi.client.getToken() === null) {
+            tokenClient.requestAccessToken({prompt: 'consent'});
+          } else {
+            tokenClient.requestAccessToken({prompt: ''});
+          }
+        } else if (gapi && gapi.client) {
+          checkAvailability(selectedDate);
+        }
+      } else if (selectedDate) {
+        // Show calendar availability div with setup message
+        const availabilityDiv = document.getElementById('calendarAvailability');
+        if (availabilityDiv) {
+          availabilityDiv.innerHTML = '<div class="availability-error">Calendar integration requires API setup. Please select your preferred time manually.</div>';
+        }
+      } else {
+        const availabilityDiv = document.getElementById('calendarAvailability');
+        if (availabilityDiv) {
+          availabilityDiv.innerHTML = '';
+        }
+      }
+    }
+
+    // Add event listener for start date changes
+    if (startDateInput) {
+      startDateInput.addEventListener('change', handleStartDateChange);
+    }
 
     // Form submission
     form.addEventListener('submit', async function(e) {
@@ -378,11 +718,43 @@
       const formData = new FormData(form);
       const jsonData = {};
       
+      // Handle regular form fields
       for (let [key, value] of formData.entries()) {
         if (value.trim()) {
-          jsonData[key] = value;
+          // Handle multiple select fields
+          if (jsonData[key]) {
+            if (Array.isArray(jsonData[key])) {
+              jsonData[key].push(value);
+            } else {
+              jsonData[key] = [jsonData[key], value];
+            }
+          } else {
+            jsonData[key] = value;
+          }
         }
       }
+      
+      // Add selected time slot if available
+      if (selectedTimeSlot) {
+        jsonData.preferredTime = selectedTimeSlot;
+      }
+      
+      // Handle multiple select fields properly
+      const multiSelectFields = [
+        'resCleaningType', 'comAreas', 'comAppliances', 'officeTasks', 
+        'workspaceTasks', 'breakroomTasks', 'bathroomTasks', 'lobbyTasks', 
+        'elevatorTasks', 'otherAreas'
+      ];
+      
+      multiSelectFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        if (field) {
+          const selectedOptions = Array.from(field.selectedOptions).map(option => option.value);
+          if (selectedOptions.length > 0) {
+            jsonData[fieldName] = selectedOptions;
+          }
+        }
+      });
       
       try {
         const response = await fetch('/submit-form', {
@@ -407,6 +779,11 @@
           form.reset();
           resSection.classList.add('hidden');
           comSection.classList.add('hidden');
+          selectedTimeSlot = null;
+          const availabilityDiv = document.getElementById('calendarAvailability');
+          if (availabilityDiv) {
+            availabilityDiv.innerHTML = '';
+          }
         } else {
           throw new Error(result.error || 'Failed to submit form');
         }
@@ -433,6 +810,16 @@
         value = value.substring(0, 3) + '-' + value.substring(3);
       }
       e.target.value = value;
+    });
+
+    // Load Google APIs when page loads
+    window.addEventListener('load', function() {
+      if (typeof gapi !== 'undefined') {
+        gapiLoaded();
+      }
+      if (typeof google !== 'undefined' && google.accounts) {
+        gisLoaded();
+      }
     });
   </script>
 </body>
