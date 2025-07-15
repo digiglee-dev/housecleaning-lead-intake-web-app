@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DigiGlee Cleaning Intake Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e6f7f7 0%, #b3e5fc 100%);
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      background: linear-gradient(45deg, #4dc3ff, #2ab7ca);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      background: linear-gradient(45deg, #4dc3ff, #2ab7ca);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 0 0 30px 0;
+      box-shadow: 0 4px 15px rgba(77, 195, 255, 0.3);
+    }
+    
+    .section {
+      margin-bottom: 30px;
+      padding: 25px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .section-title {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #2ab7ca;
+      border-bottom: 2px solid #e6f7f7;
+      padding-bottom: 10px;
+    }
+    
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .required {
+      color: #ff4444;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #4dc3ff;
+      box-shadow: 0 0 0 3px rgba(77, 195, 255, 0.1);
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .form-row > div {
+      flex: 1;
+    }
+    
+    .form-row label {
+      margin-top: 0;
+    }
+    
+    button {
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #2ab7ca, #4dc3ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-top: 30px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(42, 183, 202, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(42, 183, 202, 0.4);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .error {
+      color: #ff4444;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4dc3ff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 600px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      body {
+        padding: 10px;
+      }
+      
+      .section {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">DigiGlee</div>
+  </div>
+  
+  <h2>Cleaning Service Request Form</h2>
+  
+  <form id="cleaningForm">
+    <!-- Contact Information -->
+    <div class="section">
+      <div class="section-title">Contact Information</div>
+      
+      <label for="name">Full Name <span class="required">*</span></label>
+      <input type="text" id="name" name="name" required />
+      
+      <div class="form-row">
+        <div>
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div>
+          <label for="phone">Phone Number <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- Service Type -->
+    <div class="section">
+      <div class="section-title">Service Type</div>
+      
+      <label for="buildingType">Building Type <span class="required">*</span></label>
+      <select id="buildingType" name="buildingType" required>
+        <option value="">Select building type...</option>
+        <option value="res">Residential</option>
+        <option value="com">Commercial</option>
+      </select>
+    </div>
+
+    <!-- Residential Details -->
+    <div class="section hidden" id="resSection">
+      <div class="section-title">Residential Details</div>
+      
+      <div class="form-row">
+        <div>
+          <label for="bedrooms">Number of Bedrooms</label>
+          <input type="number" id="bedrooms" name="bedrooms" min="0" max="20" />
+        </div>
+        <div>
+          <label for="bathrooms">Number of Bathrooms</label>
+          <input type="number" id="bathrooms" name="bathrooms" min="0" max="20" step="0.5" />
+        </div>
+      </div>
+      
+      <label for="homeSize">Home Size</label>
+      <select id="homeSize" name="homeSize">
+        <option value="">Select size...</option>
+        <option value="small">Small (under 1,500 sq ft)</option>
+        <option value="medium">Medium (1,500 - 2,500 sq ft)</option>
+        <option value="large">Large (2,500 - 4,000 sq ft)</option>
+        <option value="xlarge">Extra Large (over 4,000 sq ft)</option>
+      </select>
+    </div>
+
+    <!-- Commercial Details -->
+    <div class="section hidden" id="comSection">
+      <div class="section-title">Commercial Details</div>
+      
+      <div class="form-row">
+        <div>
+          <label for="sqft">Square Footage</label>
+          <input type="number" id="sqft" name="sqft" min="0" placeholder="e.g., 5000" />
+        </div>
+        <div>
+          <label for="offices">Number of Offices</label>
+          <input type="number" id="offices" name="offices" min="0" />
+        </div>
+      </div>
+      
+      <label for="businessType">Business Type</label>
+      <select id="businessType" name="businessType">
+        <option value="">Select business type...</option>
+        <option value="office">Office</option>
+        <option value="retail">Retail Store</option>
+        <option value="restaurant">Restaurant/Food Service</option>
+        <option value="medical">Medical/Healthcare</option>
+        <option value="warehouse">Warehouse</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <!-- Service Details -->
+    <div class="section">
+      <div class="section-title">Service Details</div>
+      
+      <label for="serviceType">Service Type</label>
+      <select id="serviceType" name="serviceType">
+        <option value="">Select service type...</option>
+        <option value="one-time">One-time Cleaning</option>
+        <option value="weekly">Weekly Cleaning</option>
+        <option value="bi-weekly">Bi-weekly Cleaning</option>
+        <option value="monthly">Monthly Cleaning</option>
+        <option value="deep-clean">Deep Cleaning</option>
+        <option value="move-in-out">Move-in/Move-out Cleaning</option>
+      </select>
+      
+      <label for="date">Preferred Service Date <span class="required">*</span></label>
+      <input type="date" id="date" name="date" required />
+      
+      <label for="timePreference">Time Preference</label>
+      <select id="timePreference" name="timePreference">
+        <option value="">No preference</option>
+        <option value="morning">Morning (8 AM - 12 PM)</option>
+        <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+        <option value="evening">Evening (5 PM - 8 PM)</option>
+      </select>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="section">
+      <div class="section-title">Additional Information</div>
+      
+      <label for="notes">Special Instructions or Notes</label>
+      <textarea id="notes" name="notes" placeholder="Please include any special requests, areas of focus, or access instructions..."></textarea>
+      
+      <label for="pets">Do you have pets?</label>
+      <select id="pets" name="pets">
+        <option value="">Please select...</option>
+        <option value="no">No pets</option>
+        <option value="cats">Cats</option>
+        <option value="dogs">Dogs</option>
+        <option value="both">Both cats and dogs</option>
+        <option value="other">Other pets</option>
+      </select>
+    </div>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Submitting your request...</p>
+    </div>
+    
+    <div id="message"></div>
+    
+    <button type="submit" id="submitBtn">Submit Request</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('cleaningForm');
+    const buildingType = document.getElementById('buildingType');
+    const resSection = document.getElementById('resSection');
+    const comSection = document.getElementById('comSection');
+    const dateInput = document.getElementById('date');
+    const loadingDiv = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    // Handle building type changes
+    buildingType.addEventListener('change', function() {
+      const value = this.value;
+      
+      if (value === 'res') {
+        resSection.classList.remove('hidden');
+        comSection.classList.add('hidden');
+      } else if (value === 'com') {
+        comSection.classList.remove('hidden');
+        resSection.classList.add('hidden');
+      } else {
+        resSection.classList.add('hidden');
+        comSection.classList.add('hidden');
+      }
+    });
+
+    // Form submission
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Show loading
+      loadingDiv.style.display = 'block';
+      submitBtn.disabled = true;
+      messageDiv.innerHTML = '';
+      
+      // Collect form data
+      const formData = new FormData(form);
+      const jsonData = {};
+      
+      for (let [key, value] of formData.entries()) {
+        if (value.trim()) {
+          jsonData[key] = value;
+        }
+      }
+      
+      try {
+        const response = await fetch('/submit-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          messageDiv.innerHTML = `
+            <div class="success">
+              ✅ Thank you! Your cleaning request has been submitted successfully. 
+              ${result.emailSent ? 'A confirmation email has been sent to you.' : ''}
+              <br><br>
+              We'll contact you within 24 hours to confirm your appointment.
+            </div>
+          `;
+          form.reset();
+          resSection.classList.add('hidden');
+          comSection.classList.add('hidden');
+        } else {
+          throw new Error(result.error || 'Failed to submit form');
+        }
+        
+      } catch (error) {
+        messageDiv.innerHTML = `
+          <div class="error">
+            ❌ Error: ${error.message}. Please try again or contact us directly.
+          </div>
+        `;
+      } finally {
+        loadingDiv.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Phone number formatting
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 6) {
+        value = value.substring(0, 3) + '-' + value.substring(3, 6) + '-' + value.substring(6, 10);
+      } else if (value.length >= 3) {
+        value = value.substring(0, 3) + '-' + value.substring(3);
+      }
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>

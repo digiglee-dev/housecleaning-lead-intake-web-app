@@ -1,0 +1,23 @@
+{
+  "name": "DigiGlee Cleaning Intake",
+  "description": "Lead intake form for DigiGlee Cleaning company with email notifications",
+  "website": "https://digiglee.com",
+  "repository": "https://github.com/YOUR_USERNAME/digiglee-cleaning-intake",
+  "logo": "https://via.placeholder.com/200x200/4dc3ff/ffffff?text=DigiGlee",
+  "keywords": ["node", "express", "cleaning", "lead-generation", "email"],
+  "success_url": "/",
+  "env": {
+    "EMAIL_USER": {
+      "description": "Gmail email address for sending confirmations",
+      "value": "your.email@gmail.com"
+    },
+    "EMAIL_PASS": {
+      "description": "Gmail app password (not your regular password)",
+      "value": "your-app-password"
+    },
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    }
+  }
+}
