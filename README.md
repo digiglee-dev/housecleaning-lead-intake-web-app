@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # DigiGlee Cleaning Lead Intake Web App
 
 A modern web application for DigiGlee Cleaning company to capture and manage cleaning service leads with automated email confirmations.
@@ -166,3 +167,7 @@ This project is licensed under the MIT License.
 ## Support
 
 For questions or support, please contact the DigiGlee team.
+=======
+# housecleaning-lead-intake-web-app
+House Cleaning Lead Intake Form
+>>>>>>> a354fe61b303027b01a94be9f9750edefd5a2a55
